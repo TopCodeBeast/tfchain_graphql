@@ -1,5 +1,5 @@
-module.exports = class Init1649337032476 {
-  name = 'Init1649337032476'
+module.exports = class Init1649691326052 {
+  name = 'Init1649691326052'
 
   async up(db) {
     await db.query(`CREATE TABLE "historical_balance" ("id" character varying NOT NULL, "balance" numeric NOT NULL, "timestamp" numeric NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_74ac29ad0bdffb6d1281a1e17e8" PRIMARY KEY ("id"))`)
@@ -18,13 +18,9 @@ module.exports = class Init1649337032476 {
     await db.query(`CREATE UNIQUE INDEX "IDX_d394b8b9afbb1b1a2346f9743c" ON "public_config" ("node_id") `)
     await db.query(`CREATE TABLE "node_resources_total" ("id" character varying NOT NULL, "hru" numeric NOT NULL, "sru" numeric NOT NULL, "cru" numeric NOT NULL, "mru" numeric NOT NULL, "node_id" character varying NOT NULL, CONSTRAINT "REL_fd430c3a2645c8f409f859c2aa" UNIQUE ("node_id"), CONSTRAINT "PK_964127f256a8ffeba2aa31c098d" PRIMARY KEY ("id"))`)
     await db.query(`CREATE UNIQUE INDEX "IDX_fd430c3a2645c8f409f859c2aa" ON "node_resources_total" ("node_id") `)
-    await db.query(`CREATE TABLE "node_resources_used" ("id" character varying NOT NULL, "hru" numeric NOT NULL, "sru" numeric NOT NULL, "cru" numeric NOT NULL, "mru" numeric NOT NULL, "node_id" character varying NOT NULL, CONSTRAINT "REL_75870a8ed1c14efd1dd4ef4792" UNIQUE ("node_id"), CONSTRAINT "PK_05bf9bc81d419c0f34c8bf08d5f" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE UNIQUE INDEX "IDX_75870a8ed1c14efd1dd4ef4792" ON "node_resources_used" ("node_id") `)
-    await db.query(`CREATE TABLE "node_resources_free" ("id" character varying NOT NULL, "hru" numeric NOT NULL, "sru" numeric NOT NULL, "cru" numeric NOT NULL, "mru" numeric NOT NULL, "node_id" character varying NOT NULL, CONSTRAINT "REL_923c4dff43306d0a0f5a98a1ab" UNIQUE ("node_id"), CONSTRAINT "PK_0a15fb3f274365eef34123c2dea" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE UNIQUE INDEX "IDX_923c4dff43306d0a0f5a98a1ab" ON "node_resources_free" ("node_id") `)
     await db.query(`CREATE TABLE "interfaces" ("id" character varying NOT NULL, "name" text NOT NULL, "mac" text NOT NULL, "ips" text NOT NULL, "node_id" character varying NOT NULL, CONSTRAINT "PK_811ec6e568e3c1a89ac5e744731" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_23937641f28c607f061dab4694" ON "interfaces" ("node_id") `)
-    await db.query(`CREATE TABLE "node" ("id" character varying NOT NULL, "grid_version" integer NOT NULL, "node_id" integer NOT NULL, "farm_id" integer NOT NULL, "twin_id" integer NOT NULL, "country" text, "city" text, "uptime" numeric, "created" integer NOT NULL, "farming_policy_id" integer NOT NULL, "certification_type" character varying(9), "secure" boolean, "virtualized" boolean, "serial_number" text, "created_at" numeric NOT NULL, "updated_at" numeric NOT NULL, "location_id" character varying NOT NULL, CONSTRAINT "PK_8c8caf5f29d25264abe9eaf94dd" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "node" ("id" character varying NOT NULL, "grid_version" integer NOT NULL, "node_id" integer NOT NULL, "farm_id" integer NOT NULL, "twin_id" integer NOT NULL, "country" text, "city" text, "uptime" numeric, "created" integer NOT NULL, "farming_policy_id" integer NOT NULL, "certification_type" character varying(9), "secure" boolean, "virtualized" boolean, "serial_number" text, "created_at" numeric NOT NULL, "updated_at" numeric NOT NULL, "last_recorded_uptime" numeric, "total_uptime_this_period" numeric, "period_uptime_percentage" text, "location_id" character varying NOT NULL, CONSTRAINT "PK_8c8caf5f29d25264abe9eaf94dd" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_d224b7b862841f24dd85b55605" ON "node" ("location_id") `)
     await db.query(`CREATE TABLE "pricing_policy" ("id" character varying NOT NULL, "grid_version" integer NOT NULL, "pricing_policy_id" integer NOT NULL, "name" text NOT NULL, "su" jsonb NOT NULL, "cu" jsonb NOT NULL, "nu" jsonb NOT NULL, "ipu" jsonb NOT NULL, "foundation_account" text NOT NULL, "certified_sales_account" text NOT NULL, "dedicated_node_discount" integer NOT NULL, CONSTRAINT "PK_78105eb11bd75fd76a23bbc9bb1" PRIMARY KEY ("id"))`)
     await db.query(`CREATE TABLE "country" ("id" character varying NOT NULL, "country_id" integer NOT NULL, "code" text NOT NULL, "name" text NOT NULL, "region" text NOT NULL, "subregion" text NOT NULL, "lat" text, "long" text, CONSTRAINT "PK_bf6e37c231c4f4ea56dcd887269" PRIMARY KEY ("id"))`)
@@ -47,8 +43,6 @@ module.exports = class Init1649337032476 {
     await db.query(`ALTER TABLE "public_ip" ADD CONSTRAINT "FK_5cc2d1af1d8132b614abd340b06" FOREIGN KEY ("farm_id") REFERENCES "farm"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "public_config" ADD CONSTRAINT "FK_d394b8b9afbb1b1a2346f9743cd" FOREIGN KEY ("node_id") REFERENCES "node"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "node_resources_total" ADD CONSTRAINT "FK_fd430c3a2645c8f409f859c2aae" FOREIGN KEY ("node_id") REFERENCES "node"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-    await db.query(`ALTER TABLE "node_resources_used" ADD CONSTRAINT "FK_75870a8ed1c14efd1dd4ef47921" FOREIGN KEY ("node_id") REFERENCES "node"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-    await db.query(`ALTER TABLE "node_resources_free" ADD CONSTRAINT "FK_923c4dff43306d0a0f5a98a1aba" FOREIGN KEY ("node_id") REFERENCES "node"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "interfaces" ADD CONSTRAINT "FK_23937641f28c607f061dab4694b" FOREIGN KEY ("node_id") REFERENCES "node"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "node" ADD CONSTRAINT "FK_d224b7b862841f24dd85b556059" FOREIGN KEY ("location_id") REFERENCES "location"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "contract_resources" ADD CONSTRAINT "FK_621238dffde9099b2233650235d" FOREIGN KEY ("contract_id") REFERENCES "node_contract"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -72,10 +66,6 @@ module.exports = class Init1649337032476 {
     await db.query(`DROP INDEX "public"."IDX_d394b8b9afbb1b1a2346f9743c"`)
     await db.query(`DROP TABLE "node_resources_total"`)
     await db.query(`DROP INDEX "public"."IDX_fd430c3a2645c8f409f859c2aa"`)
-    await db.query(`DROP TABLE "node_resources_used"`)
-    await db.query(`DROP INDEX "public"."IDX_75870a8ed1c14efd1dd4ef4792"`)
-    await db.query(`DROP TABLE "node_resources_free"`)
-    await db.query(`DROP INDEX "public"."IDX_923c4dff43306d0a0f5a98a1ab"`)
     await db.query(`DROP TABLE "interfaces"`)
     await db.query(`DROP INDEX "public"."IDX_23937641f28c607f061dab4694"`)
     await db.query(`DROP TABLE "node"`)
@@ -101,8 +91,6 @@ module.exports = class Init1649337032476 {
     await db.query(`ALTER TABLE "public_ip" DROP CONSTRAINT "FK_5cc2d1af1d8132b614abd340b06"`)
     await db.query(`ALTER TABLE "public_config" DROP CONSTRAINT "FK_d394b8b9afbb1b1a2346f9743cd"`)
     await db.query(`ALTER TABLE "node_resources_total" DROP CONSTRAINT "FK_fd430c3a2645c8f409f859c2aae"`)
-    await db.query(`ALTER TABLE "node_resources_used" DROP CONSTRAINT "FK_75870a8ed1c14efd1dd4ef47921"`)
-    await db.query(`ALTER TABLE "node_resources_free" DROP CONSTRAINT "FK_923c4dff43306d0a0f5a98a1aba"`)
     await db.query(`ALTER TABLE "interfaces" DROP CONSTRAINT "FK_23937641f28c607f061dab4694b"`)
     await db.query(`ALTER TABLE "node" DROP CONSTRAINT "FK_d224b7b862841f24dd85b556059"`)
     await db.query(`ALTER TABLE "contract_resources" DROP CONSTRAINT "FK_621238dffde9099b2233650235d"`)

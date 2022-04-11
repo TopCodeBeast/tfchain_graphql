@@ -82,6 +82,9 @@ type Node @entity {
   serialNumber: String
   createdAt: BigInt!
   updatedAt: BigInt!
+  lastRecordedUptime: BigInt
+  totalUptimeThisPeriod: BigInt
+  periodUptimePercentage: String
 }
 
 type NodeResourcesTotal @entity {

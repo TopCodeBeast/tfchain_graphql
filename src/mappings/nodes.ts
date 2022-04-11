@@ -3,6 +3,10 @@ import {
 } from "@subsquid/substrate-processor";
 import { Node, Location, PublicConfig, CertificationType, Interfaces, UptimeEvent, NodeResourcesTotal } from "../model";
 import { TfgridModuleNodeDeletedEvent, TfgridModuleNodePublicConfigStoredEvent, TfgridModuleNodeStoredEvent, TfgridModuleNodeUpdatedEvent, TfgridModuleNodeUptimeReportedEvent } from "../types/events";
+import { first, last } from 'lodash'
+import moment from 'moment'
+
+import periods from '../mintingPeriods'
 
 export async function nodeStored(ctx: EventHandlerContext) {
   const node  = new TfgridModuleNodeStoredEvent(ctx)
@@ -277,7 +281,10 @@ export async function nodeDeleted(ctx: EventHandlerContext) {
   }
 }
 
+const MINTING_PERIOD_IN_SECONDS = 2630880
+
 export async function nodeUptimeReported(ctx: EventHandlerContext) {
+  console.log(`found uptime event`)
   const [nodeID, now, uptime] = new TfgridModuleNodeUptimeReportedEvent(ctx).asV9
 
   const newUptimeEvent = new UptimeEvent()
@@ -290,8 +297,42 @@ export async function nodeUptimeReported(ctx: EventHandlerContext) {
   const savedNode = await ctx.store.get(Node, { where: { nodeID: nodeID } })
 
   if (savedNode) {
+    let uptimeToAdd = BigInt(0)
+    if (savedNode.uptime) {
+      uptimeToAdd = uptime - savedNode.uptime
+    }
+
     savedNode.uptime = uptime
     savedNode.updatedAt = BigInt(ctx.event.blockTimestamp)
+    
+    const now = moment().valueOf() / 1000
+    console.log(`now ${now}`)
+
+    const currentMintingPeriod = periods.filter(period => {
+      if (now >= period.start && now <= period.end) {
+        return period
+      }
+    })
+
+    const start = moment(currentMintingPeriod[0].start * 1000)
+    const end = moment(currentMintingPeriod[0].end * 1000)
+
+    let totalExpectedSecondsOnline = MINTING_PERIOD_IN_SECONDS
+    // const totalExpectedSecondsOnline = moment.duration(end.diff(start)).asSeconds()
+    
+    if (savedNode.createdAt > start.valueOf()) {
+      totalExpectedSecondsOnline = moment.duration(end.diff(moment(Number(savedNode.createdAt)))).asSeconds()
+    }
+
+    if (savedNode.totalUptimeThisPeriod) {
+      savedNode.totalUptimeThisPeriod+= uptimeToAdd
+    } else {
+      savedNode.totalUptimeThisPeriod = BigInt(0)
+      savedNode.totalUptimeThisPeriod += uptimeToAdd
+    }
+
+    savedNode.periodUptimePercentage = `${((Number(savedNode.totalUptimeThisPeriod) / totalExpectedSecondsOnline) * 100).toFixed(2)}%`
+
     await ctx.store.save<Node>(savedNode)
   }
 }

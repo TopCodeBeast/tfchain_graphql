@@ -72,4 +72,13 @@ export class Node {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   updatedAt!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  lastRecordedUptime!: bigint | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  totalUptimeThisPeriod!: bigint | undefined | null
+
+  @Column_("text", {nullable: true})
+  periodUptimePercentage!: string | undefined | null
 }
