@@ -1,12 +1,11 @@
 import * as ss58 from "@subsquid/ss58";
-import {
-  EventHandlerContext,
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
+
 import { Twin, EntityProof } from "../model";
 import { TfgridModuleTwinStoredEvent, TfgridModuleTwinDeletedEvent, TfgridModuleTwinEntityStoredEvent, TfgridModuleTwinEntityRemovedEvent, TfgridModuleTwinUpdatedEvent } from "../types/events";
 
 export async function twinStored(ctx: EventHandlerContext) {
-  const twinEvent = new TfgridModuleTwinStoredEvent(ctx)
+  const twinEvent = new TfgridModuleTwinStoredEvent(ctx.event)
   
   let twin
   if (twinEvent.isV9) {
@@ -20,7 +19,7 @@ export async function twinStored(ctx: EventHandlerContext) {
   // const twin = new TfgridModuleTwinStoredEvent(ctx).asV9
   const newTwin = new Twin()
 
-  newTwin.id = ctx.event.id
+  // newTwin.id = ctx.event.id
 
   newTwin.gridVersion = twin.version
   newTwin.twinID = twin.id
@@ -32,7 +31,7 @@ export async function twinStored(ctx: EventHandlerContext) {
   await ctx.store.save<Twin>(newTwin)
 }
 
-export async function twinUpdated(ctx: EventHandlerContext) {
+export async function twinUpdated(ctx: EventContext) {
   const twinEvent = new TfgridModuleTwinUpdatedEvent(ctx)
 
   let twin
@@ -53,7 +52,7 @@ export async function twinUpdated(ctx: EventHandlerContext) {
   await ctx.store.save<Twin>(savedTwin)
 }
 
-export async function twinDeleted(ctx: EventHandlerContext) {
+export async function twinDeleted(ctx: EventContext) {
   const twinDeletedEvent = new TfgridModuleTwinDeletedEvent(ctx)
   
   const savedTwin = await ctx.store.get(Twin, { where: { twinID: twinDeletedEvent.asV9 } })
@@ -63,7 +62,7 @@ export async function twinDeleted(ctx: EventHandlerContext) {
   }
 }
 
-export async function twinEntityStored(ctx: EventHandlerContext) {
+export async function twinEntityStored(ctx: EventContext) {
   const twinEntityStoredEvents = new TfgridModuleTwinEntityStoredEvent(ctx).asV9
 
   let savedTwin = await ctx.store.get(Twin, { where: { twinID: twinEntityStoredEvents[0] } })
@@ -81,7 +80,7 @@ export async function twinEntityStored(ctx: EventHandlerContext) {
   }
 }
 
-export async function twinEntityRemoved(ctx: EventHandlerContext) {
+export async function twinEntityRemoved(ctx: EventContext) {
   const [twinID, entityID] = new TfgridModuleTwinEntityRemovedEvent(ctx).asV9
 
   let savedTwinEntity = await ctx.store.get(EntityProof, { where: { entityID: entityID }})
