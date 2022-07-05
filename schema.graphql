@@ -67,7 +67,7 @@ type Node @entity {
   nodeID: Int!
   farmID: Int!
   twinID: Int!
-  location: Location!
+  location: Location
   country: String
   city: String
   publicConfig: PublicConfig @derivedFrom(field: "node")

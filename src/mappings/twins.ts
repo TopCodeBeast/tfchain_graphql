@@ -19,7 +19,7 @@ export async function twinStored(ctx: EventHandlerContext) {
   // const twin = new TfgridModuleTwinStoredEvent(ctx).asV9
   const newTwin = new Twin()
 
-  // newTwin.id = ctx.event.id
+  newTwin.id = ctx.event.id
 
   newTwin.gridVersion = twin.version
   newTwin.twinID = twin.id

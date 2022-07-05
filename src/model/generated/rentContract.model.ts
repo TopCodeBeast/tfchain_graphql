@@ -11,16 +11,16 @@ export class RentContract {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   gridVersion!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   contractID!: bigint
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   twinID!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   nodeID!: number
 
   @Column_("varchar", {length: 11, nullable: false})

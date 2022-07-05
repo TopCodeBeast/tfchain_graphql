@@ -1,6 +1,7 @@
 import { EventHandlerContext } from '../types/context'
 import { ContractState, PublicIp, NameContract, NodeContract, ContractBillReport, DiscountLevel, ContractResources, NodeResourcesTotal, Node, RentContract, Farm, NruConsumption } from "../model";
 import { SmartContractModuleContractCreatedEvent, SmartContractModuleContractUpdatedEvent, SmartContractModuleNodeContractCanceledEvent, SmartContractModuleNameContractCanceledEvent, SmartContractModuleContractBilledEvent, SmartContractModuleUpdatedUsedResourcesEvent, SmartContractModuleNruConsumptionReportReceivedEvent, SmartContractModuleRentContractCanceledEvent, SmartContractModuleContractGracePeriodStartedEvent, SmartContractModuleContractGracePeriodEndedEvent } from "../types/events";
+import { Equal } from 'typeorm';
 
 export async function contractCreated(ctx: EventHandlerContext) {
   let contractCreatedEvent = new SmartContractModuleContractCreatedEvent(ctx)
@@ -97,16 +98,16 @@ export async function contractUpdated(ctx: EventHandlerContext) {
 
   const SavedNodeContract = await ctx.store.get(NodeContract, { where: { contractID: contractEvent.contractId } })
   if (SavedNodeContract) {
-    await updateNodeContract(contractEvent, SavedNodeContract, ctx.store)
+    await updateNodeContract(contractEvent, SavedNodeContract, ctx)
   }
 
   const SavedNameContract = await ctx.store.get(NameContract, { where: { contractID: contractEvent.contractId } })
   if (SavedNameContract) {
-    await updateNameContract(contractEvent, SavedNameContract, ctx.store)
+    await updateNameContract(contractEvent, SavedNameContract, ctx)
   }
 }
 
-async function updateNodeContract(ctr: any, contract: NodeContract, store: Store) {
+async function updateNodeContract(ctr: any, contract: NodeContract, ctx: EventHandlerContext) {
   if (ctr.contractType.__kind !== "NodeContract") return
 
   const parsedNodeContract = ctr.contractType.value
@@ -129,10 +130,10 @@ async function updateNodeContract(ctr: any, contract: NodeContract, store: Store
       break
   }
   contract.state = state
-  await store.save<NodeContract>(contract)
+  await ctx.store.save<NodeContract>(contract)
 }
 
-async function updateNameContract(ctr: any, contract: NameContract, store: Store) {
+async function updateNameContract(ctr: any, contract: NameContract, ctx: EventHandlerContext) {
   if (ctr.contractType.__kind !== "NameContract") return
 
   const parsedNameContract = ctr.contractType.value
@@ -152,7 +153,7 @@ async function updateNameContract(ctr: any, contract: NameContract, store: Store
       break
   }
   contract.state = state
-  await store.save<NameContract>(contract)
+  await ctx.store.save<NameContract>(contract)
 }
 
 export async function nodeContractCanceled(ctx: EventHandlerContext) {
@@ -236,7 +237,7 @@ export async function contractUpdateUsedResources(ctx: EventHandlerContext) {
   const savedContract = await ctx.store.get(NodeContract, { where: { contractID: usedResources.contractId } })
   if (!savedContract) return
 
-  const savedContractResources = await ctx.store.get(ContractResources, { where: { contract: savedContract }})
+  const savedContractResources = await ctx.store.get(ContractResources, { where: { contract: Equal(savedContract) }})
   if (savedContractResources) {
     contractUsedResources.cru = usedResources.used.cru
     contractUsedResources.sru = usedResources.used.sru

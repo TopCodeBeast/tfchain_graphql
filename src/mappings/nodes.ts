@@ -1,9 +1,10 @@
 import { EventHandlerContext } from '../types/context'
 import { Node, Location, PublicConfig, NodeCertification, Interfaces, UptimeEvent, NodeResourcesTotal } from "../model";
-import { SmartContractModuleNodeMarkedAsDedicatedEvent, TfgridModuleNodeCertificationSetEvent, TfgridModuleNodeDeletedEvent, TfgridModuleNodePublicConfigStoredEvent, TfgridModuleNodeStoredEvent, TfgridModuleNodeUpdatedEvent, TfgridModuleNodeUptimeReportedEvent } from "../types/events";
+import { TfgridModuleNodeCertificationSetEvent, TfgridModuleNodeDeletedEvent, TfgridModuleNodePublicConfigStoredEvent, TfgridModuleNodeStoredEvent, TfgridModuleNodeUpdatedEvent, TfgridModuleNodeUptimeReportedEvent } from "../types/events";
+import { Equal } from 'typeorm';
 
 export async function nodeStored(ctx: EventHandlerContext) {
-  const node  = new TfgridModuleNodeStoredEvent(ctx)
+  const node = new TfgridModuleNodeStoredEvent(ctx)
   let nodeEvent
   if (node.isV9) {
     nodeEvent = node.asV9
@@ -16,9 +17,9 @@ export async function nodeStored(ctx: EventHandlerContext) {
   } else if (node.isV101) {
     nodeEvent = node.asV101
   }
-  
+
   if (!nodeEvent) return
-  
+
   const newNode = new Node()
   newNode.id = ctx.event.id
   newNode.gridVersion = nodeEvent.version
@@ -42,6 +43,7 @@ export async function nodeStored(ctx: EventHandlerContext) {
   await ctx.store.save<Location>(newLocation)
 
   newNode.location = newLocation
+  await ctx.store.save<Node>(newNode)
 
   if (node.isV28) {
     const nodeAsV28 = node.asV28
@@ -49,13 +51,13 @@ export async function nodeStored(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeAsV28.certificationType.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
-    }
+          break
+      }
       newNode.certification = certType
     } else {
       newNode.certification = NodeCertification.Diy
@@ -63,7 +65,7 @@ export async function nodeStored(ctx: EventHandlerContext) {
   }
 
   if (node.isV43) {
-    const nodeAsV43 = node.asV43 
+    const nodeAsV43 = node.asV43
     newNode.secure = nodeAsV43.secureBoot ? true : false
     newNode.virtualized = nodeAsV43.virtualized ? true : false
     newNode.serialNumber = nodeAsV43.serialNumber.toString()
@@ -71,13 +73,13 @@ export async function nodeStored(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeAsV43.certificationType.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
-    }
+          break
+      }
       newNode.certification = certType
     } else {
       newNode.certification = NodeCertification.Diy
@@ -101,13 +103,13 @@ export async function nodeStored(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeEvent.certification.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
-    }
+          break
+      }
       newNode.certification = certType
     } else {
       newNode.certification = NodeCertification.Diy
@@ -158,7 +160,7 @@ export async function nodeStored(ctx: EventHandlerContext) {
 }
 
 export async function nodeUpdated(ctx: EventHandlerContext) {
-  const node  = new TfgridModuleNodeUpdatedEvent(ctx)
+  const node = new TfgridModuleNodeUpdatedEvent(ctx)
 
   let nodeEvent
   if (node.isV9) {
@@ -185,7 +187,7 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
   savedNode.updatedAt = BigInt(ctx.block.timestamp)
 
   // Recalculate total / free resoures when a node get's updated
-  let resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: savedNode } })
+  let resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) } })
   if (resourcesTotal) {
     resourcesTotal.sru = nodeEvent.resources.sru
     resourcesTotal.hru = nodeEvent.resources.hru
@@ -211,13 +213,13 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeAsV28.certificationType.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
-    }
+          break
+      }
       savedNode.certification = certType
     } else {
       savedNode.certification = NodeCertification.Diy
@@ -225,7 +227,7 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
   }
 
   if (node.isV43) {
-    const nodeAsV43 = node.asV43 
+    const nodeAsV43 = node.asV43
     savedNode.secure = nodeAsV43.secureBoot ? true : false
     savedNode.virtualized = nodeAsV43.virtualized ? true : false
     savedNode.serialNumber = nodeAsV43.serialNumber.toString()
@@ -233,13 +235,13 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeAsV43.certificationType.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
-    }
+          break
+      }
       savedNode.certification = certType
     } else {
       savedNode.certification = NodeCertification.Diy
@@ -262,12 +264,12 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
       const certificationTypeAsString = nodeEvent.certification.__kind.toString()
       let certType = NodeCertification.Diy
       switch (certificationTypeAsString) {
-        case 'Diy': 
+        case 'Diy':
           certType = NodeCertification.Diy
-        break
-        case 'Certified': 
+          break
+        case 'Certified':
           certType = NodeCertification.Certified
-        break
+          break
       }
       savedNode.certification = certType
     } else {
@@ -287,20 +289,20 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
       // if an interface with same name exists
       const found = savedNode.interfaces.findIndex(interf => interf.name === intf.name.toString())
       if (found > 0) {
-        newInterface = savedNode.interfaces[found]    
+        newInterface = savedNode.interfaces[found]
       } else {
         newInterface = new Interfaces()
         newInterface.id = ctx.event.id
         newInterface.node = savedNode
       }
     }
-    
+
     if (!newInterface) return
 
     newInterface.name = intf.name.toString()
     newInterface.mac = intf.mac.toString()
     newInterface.ips = intf.ips.map(ip => ip.toString()).join(',')
-    
+
     await ctx.store.save<Interfaces>(newInterface)
     savedNode.interfaces.push(newInterface)
   })
@@ -312,18 +314,18 @@ export async function nodeDeleted(ctx: EventHandlerContext) {
   const nodeID = new TfgridModuleNodeDeletedEvent(ctx).asV9
 
   const savedNode = await ctx.store.get(Node, { where: { nodeID: nodeID } })
-  
+
   if (savedNode) {
-    const resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: savedNode } })
+    const resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) } })
     if (resourcesTotal) {
       await ctx.store.remove(resourcesTotal)
     }
-    const pubConfig = await ctx.store.get(PublicConfig, { where: { node: savedNode } })
+    const pubConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) } })
     if (pubConfig) {
       await ctx.store.remove(pubConfig)
     }
 
-    const intfs = await ctx.store.find(Interfaces, { where: { node: savedNode }})
+    const intfs = await ctx.store.find(Interfaces, { where: { node: Equal(savedNode) } })
     const promises = intfs.map(intf => {
       return ctx.store.remove(intf)
     })
@@ -368,7 +370,7 @@ export async function nodePublicConfigStored(ctx: EventHandlerContext) {
   const savedNode = await ctx.store.get(Node, { where: { nodeID: nodeID } })
   if (!savedNode) return
 
-  let publicConfig = await ctx.store.get(PublicConfig, { where: { node: savedNode }})
+  let publicConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) } })
 
   if (!publicConfig) {
     publicConfig = new PublicConfig()
@@ -403,12 +405,12 @@ export async function nodeCertificationSet(ctx: EventHandlerContext) {
 
   let certType = NodeCertification.Diy
   switch (certification.__kind.toString()) {
-    case 'Diy': 
+    case 'Diy':
       certType = NodeCertification.Diy
-    break
-    case 'Certified': 
+      break
+    case 'Certified':
       certType = NodeCertification.Certified
-    break
+      break
   }
 
   savedNode.certification = certType
