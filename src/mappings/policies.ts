@@ -1,6 +1,4 @@
-import {
-    EventHandlerContext,
-  } from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { PricingPolicy, FarmingPolicy, Policy, FarmCertification, NodeCertification, Farm } from "../model";
 import { TfgridModulePricingPolicyStoredEvent, TfgridModuleFarmingPolicyStoredEvent, TfgridModuleFarmingPolicyUpdatedEvent, TfgridModuleFarmingPolicySetEvent, TfgridModuleFarmCertificationSetEvent } from "../types/events";
 import * as ss58 from "@subsquid/ss58";

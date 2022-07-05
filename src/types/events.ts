@@ -1,5 +1,5 @@
 import assert from 'assert'
-import {EventContext, Result, deprecateLatest} from './support'
+import {Chain, ChainContext, EventContext, Event, Result} from './support'
 import * as v9 from './v9'
 import * as v12 from './v12'
 import * as v25 from './v25'
@@ -49,12 +49,10 @@ export class BalancesTransferEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): {from: AccountId32, to: AccountId32, amount: bigint} {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -74,12 +72,10 @@ export class SmartContractModuleContractBilledEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): v9.ContractBill {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -135,12 +131,10 @@ export class SmartContractModuleContractCreatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v59.Contract {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -196,12 +190,10 @@ export class SmartContractModuleContractUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v59.Contract {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -221,12 +213,10 @@ export class SmartContractModuleContractGracePeriodEndedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV59
   }
 
   get asLatest(): [bigint, number, number] {
-    deprecateLatest()
     return this.asV59
   }
 }
@@ -246,12 +236,10 @@ export class SmartContractModuleContractGracePeriodStartedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV59
   }
 
   get asLatest(): [bigint, number, number, bigint] {
-    deprecateLatest()
     return this.asV59
   }
 }
@@ -271,12 +259,10 @@ export class SmartContractModuleNameContractCanceledEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV19
   }
 
   get asLatest(): bigint {
-    deprecateLatest()
     return this.asV19
   }
 }
@@ -296,12 +282,10 @@ export class SmartContractModuleNodeContractCanceledEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV19
   }
 
   get asLatest(): [bigint, number, number] {
-    deprecateLatest()
     return this.asV19
   }
 }
@@ -321,12 +305,10 @@ export class SmartContractModuleNruConsumptionReportReceivedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV49
   }
 
   get asLatest(): v49.NruConsumption {
-    deprecateLatest()
     return this.asV49
   }
 }
@@ -346,12 +328,10 @@ export class SmartContractModuleUpdatedUsedResourcesEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV49
   }
 
   get asLatest(): v49.ContractResources {
-    deprecateLatest()
     return this.asV49
   }
 }
@@ -371,12 +351,10 @@ export class TfgridModuleEntityDeletedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): number {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -396,12 +374,10 @@ export class TfgridModuleEntityStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): v9.Entity {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -421,12 +397,10 @@ export class TfgridModuleEntityUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): v9.Entity {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -446,12 +420,10 @@ export class TfgridModuleFarmDeletedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): number {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -471,12 +443,10 @@ export class TfgridModuleFarmPayoutV2AddressRegisteredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): [number, Uint8Array] {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -523,12 +493,10 @@ export class TfgridModuleFarmStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v62.Farm {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -575,12 +543,10 @@ export class TfgridModuleFarmUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v62.Farm {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -609,12 +575,10 @@ export class TfgridModuleFarmingPolicyStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): v62.FarmingPolicy {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -634,12 +598,10 @@ export class TfgridModuleFarmingPolicyUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): v62.FarmingPolicy {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -659,12 +621,10 @@ export class TfgridModuleNodeDeletedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): number {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -684,12 +644,10 @@ export class TfgridModuleNodePublicConfigStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV12
   }
 
   get asLatest(): [number, v12.PublicConfig] {
-    deprecateLatest()
     return this.asV12
   }
 }
@@ -745,12 +703,10 @@ export class TfgridModuleNodeStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v62.Node {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -806,12 +762,10 @@ export class TfgridModuleNodeUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v62.Node {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -831,12 +785,10 @@ export class TfgridModuleNodeUptimeReportedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): [number, bigint, bigint] {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -874,12 +826,10 @@ export class TfgridModulePricingPolicyStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v51.PricingPolicy {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -899,12 +849,10 @@ export class TfgridModuleTwinDeletedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): number {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -924,12 +872,10 @@ export class TfgridModuleTwinEntityRemovedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): [number, number] {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -949,12 +895,10 @@ export class TfgridModuleTwinEntityStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): [number, number, Uint8Array] {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -983,12 +927,10 @@ export class TfgridModuleTwinStoredEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v9.Twin {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -1017,12 +959,10 @@ export class TftBridgeModuleBurnTransactionProcessedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v9.BurnTransaction {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -1042,12 +982,10 @@ export class TftBridgeModuleMintCompletedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV9
   }
 
   get asLatest(): v9.MintTransaction {
-    deprecateLatest()
     return this.asV9
   }
 }
@@ -1076,12 +1014,10 @@ export class TftBridgeModuleRefundTransactionProcessedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v9.RefundTransaction {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -1101,12 +1037,10 @@ export class SmartContractModuleRentContractCanceledEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV50
   }
 
   get asLatest(): bigint {
-    deprecateLatest()
     return this.asV50
   }
 }
@@ -1135,12 +1069,10 @@ export class TfgridModuleTwinUpdatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV101
   }
 
   get asLatest(): v9.Twin {
-    deprecateLatest()
     return this.asV101
   }
 }
@@ -1160,12 +1092,10 @@ export class TfgridModuleConnectionPriceSetEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): number {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -1185,12 +1115,10 @@ export class TfgridModuleFarmCertificationSetEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): [number, v62.FarmCertification] {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -1210,12 +1138,10 @@ export class TfgridModuleFarmingPolicySetEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): [number, (v62.FarmingPolicyLimit | undefined)] {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -1235,12 +1161,10 @@ export class TfgridModuleNodeCertificationSetEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): [number, v62.NodeCertification] {
-    deprecateLatest()
     return this.asV63
   }
 }
@@ -1260,12 +1184,10 @@ export class SmartContractModuleNodeMarkedAsDedicatedEvent {
   }
 
   get isLatest(): boolean {
-    deprecateLatest()
     return this.isV63
   }
 
   get asLatest(): [number, boolean] {
-    deprecateLatest()
     return this.asV63
   }
 }

@@ -1,7 +1,5 @@
 import * as ss58 from "@subsquid/ss58";
-import {
-  EventHandlerContext,
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { Entity } from "../model";
 import { TfgridModuleEntityStoredEvent, TfgridModuleEntityUpdatedEvent, TfgridModuleEntityDeletedEvent } from "../types/events";
 

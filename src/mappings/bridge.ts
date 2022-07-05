@@ -1,7 +1,5 @@
 import * as ss58 from "@subsquid/ss58";
-import {
-  EventHandlerContext,
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { MintTransaction, BurnTransaction, RefundTransaction } from "../model";
 import { TftBridgeModuleMintCompletedEvent, TftBridgeModuleBurnTransactionProcessedEvent, TftBridgeModuleRefundTransactionProcessedEvent } from "../types/events";
 

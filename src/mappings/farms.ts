@@ -1,6 +1,4 @@
-import {
-  EventHandlerContext,
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { Farm, FarmCertification, PublicIp } from "../model";
 import { TfgridModuleFarmStoredEvent, TfgridModuleFarmDeletedEvent, TfgridModuleFarmUpdatedEvent, TfgridModuleFarmPayoutV2AddressRegisteredEvent, TfgridModuleFarmCertificationSetEvent } from "../types/events";
 
@@ -105,7 +103,7 @@ export async function farmUpdated(ctx: EventHandlerContext) {
 
   await ctx.store.save<Farm>(savedFarm)
 
-  let farm = ctx.event.params[0].value as Farm
+  let farm = ctx.event.args[0].value as Farm
   if (farm.dedicatedFarm) {
     savedFarm.dedicatedFarm = farm.dedicatedFarm
     await ctx.store.save<Farm>(savedFarm)

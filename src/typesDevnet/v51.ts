@@ -10,8 +10,8 @@ export interface PricingPolicy {
   ipu: Policy
   uniqueName: Policy
   domainName: Policy
-  foundationAccount: Uint8Array
-  certifiedSalesAccount: Uint8Array
+  foundationAccount: AccountId
+  certifiedSalesAccount: AccountId
   discountForDedicatedNodes: number
 }
 
@@ -19,6 +19,8 @@ export interface Policy {
   value: number
   unit: Unit
 }
+
+export type AccountId = Uint8Array
 
 export type Unit = Unit_Bytes | Unit_Kilobytes | Unit_Megabytes | Unit_Gigabytes | Unit_Terrabytes
 

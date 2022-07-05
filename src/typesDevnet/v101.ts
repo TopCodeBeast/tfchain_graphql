@@ -1,15 +1,6 @@
 import type {Result} from './support'
 
-export type AccountId = Uint8Array
-
-export type Balance = bigint
-
-export interface ContractBill {
-  contractId: bigint
-  timestamp: bigint
-  discountLevel: DiscountLevel
-  amountBilled: bigint
-}
+export type AccountId32 = Uint8Array
 
 export interface Contract {
   version: number
@@ -19,55 +10,16 @@ export interface Contract {
   contractType: ContractData
 }
 
-export interface NruConsumption {
-  contractId: bigint
-  timestamp: bigint
-  window: bigint
-  nru: bigint
-}
-
-export interface ContractResources {
-  contractId: bigint
-  used: Resources
-}
-
-export interface Entity {
-  version: number
-  id: number
-  name: Uint8Array
-  accountId: AccountId
-  country: Uint8Array
-  city: Uint8Array
-}
-
 export interface Farm {
   version: number
   id: number
   name: Uint8Array
   twinId: number
   pricingPolicyId: number
-  certificationType: CertificationType
+  certification: FarmCertification
   publicIps: PublicIP[]
-}
-
-export interface FarmingPolicy {
-  version: number
-  id: number
-  name: Uint8Array
-  cu: number
-  su: number
-  nu: number
-  ipv4: number
-  timestamp: bigint
-  certificationType: CertificationType
-}
-
-export interface PublicConfig {
-  ipv4: Uint8Array
-  ipv6: Uint8Array
-  gw4: Uint8Array
-  gw6: Uint8Array
-  domain: Uint8Array
+  dedicatedFarm: boolean
+  farmingPolicyLimits: (FarmingPolicyLimit | undefined)
 }
 
 export interface Node {
@@ -83,10 +35,11 @@ export interface Node {
   created: bigint
   farmingPolicyId: number
   interfaces: Interface[]
-  certificationType: CertificationType
+  certification: NodeCertification
   secureBoot: boolean
   virtualized: boolean
   serialNumber: Uint8Array
+  connectionPrice: number
 }
 
 export interface PricingPolicy {
@@ -99,41 +52,20 @@ export interface PricingPolicy {
   ipu: Policy
   uniqueName: Policy
   domainName: Policy
-  foundationAccount: AccountId
-  certifiedSalesAccount: AccountId
+  foundationAccount: AccountId32
+  certifiedSalesAccount: AccountId32
+  discountForDedicationNodes: number
 }
 
 export interface Twin {
-  id: number
-  ip: Uint8Array
   version: number
+  id: number
+  accountId: AccountId32
+  ip: Uint8Array
   entities: EntityProof[]
-  accountId: AccountId
 }
 
-export type DiscountLevel = DiscountLevel_None | DiscountLevel_Default | DiscountLevel_Bronze | DiscountLevel_Silver | DiscountLevel_Gold
-
-export interface DiscountLevel_None {
-  __kind: 'None'
-}
-
-export interface DiscountLevel_Default {
-  __kind: 'Default'
-}
-
-export interface DiscountLevel_Bronze {
-  __kind: 'Bronze'
-}
-
-export interface DiscountLevel_Silver {
-  __kind: 'Silver'
-}
-
-export interface DiscountLevel_Gold {
-  __kind: 'Gold'
-}
-
-export type ContractState = ContractState_Created | ContractState_Deleted
+export type ContractState = ContractState_Created | ContractState_Deleted | ContractState_GracePeriod
 
 export interface ContractState_Created {
   __kind: 'Created'
@@ -144,7 +76,12 @@ export interface ContractState_Deleted {
   value: Cause
 }
 
-export type ContractData = ContractData_NodeContract | ContractData_NameContract
+export interface ContractState_GracePeriod {
+  __kind: 'GracePeriod'
+  value: bigint
+}
+
+export type ContractData = ContractData_NodeContract | ContractData_NameContract | ContractData_RentContract
 
 export interface ContractData_NodeContract {
   __kind: 'NodeContract'
@@ -156,21 +93,19 @@ export interface ContractData_NameContract {
   value: NameContract
 }
 
-export interface Resources {
-  hru: bigint
-  sru: bigint
-  cru: bigint
-  mru: bigint
+export interface ContractData_RentContract {
+  __kind: 'RentContract'
+  value: RentContract
 }
 
-export type CertificationType = CertificationType_Diy | CertificationType_Certified
+export type FarmCertification = FarmCertification_NotCertified | FarmCertification_Gold
 
-export interface CertificationType_Diy {
-  __kind: 'Diy'
+export interface FarmCertification_NotCertified {
+  __kind: 'NotCertified'
 }
 
-export interface CertificationType_Certified {
-  __kind: 'Certified'
+export interface FarmCertification_Gold {
+  __kind: 'Gold'
 }
 
 export interface PublicIP {
@@ -179,15 +114,49 @@ export interface PublicIP {
   contractId: bigint
 }
 
+export interface FarmingPolicyLimit {
+  farmingPolicyId: number
+  cu: (bigint | undefined)
+  su: (bigint | undefined)
+  end: (bigint | undefined)
+  nodeCount: (number | undefined)
+  nodeCertification: boolean
+}
+
+export interface Resources {
+  hru: bigint
+  sru: bigint
+  cru: bigint
+  mru: bigint
+}
+
 export interface Location {
   longitude: Uint8Array
   latitude: Uint8Array
+}
+
+export interface PublicConfig {
+  ipv4: Uint8Array
+  ipv6: Uint8Array
+  gw4: Uint8Array
+  gw6: Uint8Array
+  domain: Uint8Array
 }
 
 export interface Interface {
   name: Uint8Array
   mac: Uint8Array
   ips: Uint8Array[]
+}
+
+export type NodeCertification = NodeCertification_Diy | NodeCertification_Certified
+
+export interface NodeCertification_Diy {
+  __kind: 'Diy'
+}
+
+export interface NodeCertification_Certified {
+  __kind: 'Certified'
 }
 
 export interface Policy {
@@ -220,6 +189,10 @@ export interface NodeContract {
 
 export interface NameContract {
   name: Uint8Array
+}
+
+export interface RentContract {
+  nodeId: number
 }
 
 export type Unit = Unit_Bytes | Unit_Kilobytes | Unit_Megabytes | Unit_Gigabytes | Unit_Terrabytes

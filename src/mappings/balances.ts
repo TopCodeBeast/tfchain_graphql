@@ -1,10 +1,9 @@
 import * as ss58 from "@subsquid/ss58";
-import { EventContext } from '../types/context'
-
+import { EventHandlerContext } from '../types/context'
 import { Transfer } from "../model";
 import { BalancesTransferEvent } from "../types/events";
 
-export async function balancesTransfer(ctx: EventContext): Promise<void> {
+export async function balancesTransfer(ctx: EventHandlerContext): Promise<void> {
   const transferEvent = new BalancesTransferEvent(ctx)
 
   let from, to, amount
@@ -31,5 +30,5 @@ export async function balancesTransfer(ctx: EventContext): Promise<void> {
   t.from = fromEncoded
   t.amount = amount
   t.timestamp = BigInt(ctx.block.timestamp)
-  await store.save(t)
+  await ctx.store.save(t)
 }

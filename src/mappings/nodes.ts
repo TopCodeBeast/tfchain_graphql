@@ -1,6 +1,4 @@
-import {
-  EventHandlerContext,
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { Node, Location, PublicConfig, NodeCertification, Interfaces, UptimeEvent, NodeResourcesTotal } from "../model";
 import { SmartContractModuleNodeMarkedAsDedicatedEvent, TfgridModuleNodeCertificationSetEvent, TfgridModuleNodeDeletedEvent, TfgridModuleNodePublicConfigStoredEvent, TfgridModuleNodeStoredEvent, TfgridModuleNodeUpdatedEvent, TfgridModuleNodeUptimeReportedEvent } from "../types/events";
 
@@ -28,8 +26,8 @@ export async function nodeStored(ctx: EventHandlerContext) {
   newNode.nodeID = nodeEvent.id
   newNode.twinID = nodeEvent.twinId
 
-  newNode.createdAt = BigInt(ctx.event.blockTimestamp)
-  newNode.updatedAt = BigInt(ctx.event.blockTimestamp)
+  newNode.createdAt = BigInt(ctx.block.timestamp)
+  newNode.updatedAt = BigInt(ctx.block.timestamp)
 
   newNode.country = nodeEvent.country.toString()
   newNode.city = nodeEvent.city.toString()
@@ -184,7 +182,7 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
   savedNode.farmID = nodeEvent.farmId
   savedNode.nodeID = nodeEvent.id
   savedNode.twinID = nodeEvent.twinId
-  savedNode.updatedAt = BigInt(ctx.event.blockTimestamp)
+  savedNode.updatedAt = BigInt(ctx.block.timestamp)
 
   // Recalculate total / free resoures when a node get's updated
   let resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: savedNode } })
@@ -359,7 +357,7 @@ export async function nodeUptimeReported(ctx: EventHandlerContext) {
 
   if (savedNode) {
     savedNode.uptime = uptime
-    savedNode.updatedAt = BigInt(ctx.event.blockTimestamp)
+    savedNode.updatedAt = BigInt(ctx.block.timestamp)
     await ctx.store.save<Node>(savedNode)
   }
 }

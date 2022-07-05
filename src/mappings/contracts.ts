@@ -1,7 +1,4 @@
-import {
-  EventHandlerContext,
-  Store
-} from "@subsquid/substrate-processor";
+import { EventHandlerContext } from '../types/context'
 import { ContractState, PublicIp, NameContract, NodeContract, ContractBillReport, DiscountLevel, ContractResources, NodeResourcesTotal, Node, RentContract, Farm, NruConsumption } from "../model";
 import { SmartContractModuleContractCreatedEvent, SmartContractModuleContractUpdatedEvent, SmartContractModuleNodeContractCanceledEvent, SmartContractModuleNameContractCanceledEvent, SmartContractModuleContractBilledEvent, SmartContractModuleUpdatedUsedResourcesEvent, SmartContractModuleNruConsumptionReportReceivedEvent, SmartContractModuleRentContractCanceledEvent, SmartContractModuleContractGracePeriodStartedEvent, SmartContractModuleContractGracePeriodEndedEvent } from "../types/events";
 
@@ -35,7 +32,7 @@ export async function contractCreated(ctx: EventHandlerContext) {
     newNameContract.gridVersion = contractEvent.version
     newNameContract.twinID = contractEvent.twinId
     newNameContract.state = state
-    newNameContract.createdAt = BigInt(ctx.event.blockTimestamp)
+    newNameContract.createdAt = BigInt(ctx.block.timestamp)
     await ctx.store.save<NameContract>(newNameContract)
   }
   else if (contractEvent.contractType.__kind === "NodeContract") {
@@ -52,7 +49,7 @@ export async function contractCreated(ctx: EventHandlerContext) {
     newNodeContract.deploymentData = contract.deploymentData.toString()
     newNodeContract.deploymentHash = contract.deploymentHash.toString()
     newNodeContract.state = state
-    newNodeContract.createdAt = BigInt(ctx.event.blockTimestamp)
+    newNodeContract.createdAt = BigInt(ctx.block.timestamp)
     await ctx.store.save<NodeContract>(newNodeContract)
 
     contract.publicIpsList.forEach(async ip => {
@@ -74,7 +71,7 @@ export async function contractCreated(ctx: EventHandlerContext) {
     newRentContract.twinID = contractEvent.twinId
     newRentContract.nodeID = contract.nodeId
     newRentContract.state = state
-    newRentContract.createdAt = BigInt(ctx.event.blockTimestamp)
+    newRentContract.createdAt = BigInt(ctx.block.timestamp)
 
     await ctx.store.save<RentContract>(newRentContract)
   }
