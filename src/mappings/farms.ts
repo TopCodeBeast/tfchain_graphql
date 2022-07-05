@@ -78,7 +78,7 @@ export async function farmUpdated(ctx: EventHandlerContext) {
   savedFarm.pricingPolicyID = farmUpdatedEventParsed.pricingPolicyId
 
   await farmUpdatedEventParsed.publicIps.forEach(async ip => {
-    const savedIP = await ctx.store.get(PublicIp, { where: { ip: ip.ip.toString() }})
+    const savedIP = await ctx.store.get(PublicIp, { where: { ip: ip.ip.toString() }, relations: { farm: true }})
     // ip is already there in storage, don't save it again
     if (savedIP) {
       savedIP.ip = ip.ip.toString()
@@ -103,11 +103,11 @@ export async function farmUpdated(ctx: EventHandlerContext) {
 
   await ctx.store.save<Farm>(savedFarm)
 
-  let farm = ctx.event.args[0].value as Farm
-  if (farm.dedicatedFarm) {
-    savedFarm.dedicatedFarm = farm.dedicatedFarm
-    await ctx.store.save<Farm>(savedFarm)
-  }  
+  // let farm = ctx.event.args[0].value as Farm
+  // if (farm.dedicatedFarm) {
+  //   savedFarm.dedicatedFarm = farm.dedicatedFarm
+  //   await ctx.store.save<Farm>(savedFarm)
+  // }  
 }
 
 export async function farmDeleted(ctx: EventHandlerContext) {

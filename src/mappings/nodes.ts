@@ -187,7 +187,7 @@ export async function nodeUpdated(ctx: EventHandlerContext) {
   savedNode.updatedAt = BigInt(ctx.block.timestamp)
 
   // Recalculate total / free resoures when a node get's updated
-  let resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) } })
+  let resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) }, relations: { node: true } })
   if (resourcesTotal) {
     resourcesTotal.sru = nodeEvent.resources.sru
     resourcesTotal.hru = nodeEvent.resources.hru
@@ -316,16 +316,16 @@ export async function nodeDeleted(ctx: EventHandlerContext) {
   const savedNode = await ctx.store.get(Node, { where: { nodeID: nodeID } })
 
   if (savedNode) {
-    const resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) } })
+    const resourcesTotal = await ctx.store.get(NodeResourcesTotal, { where: { node: Equal(savedNode) }, relations: { node: true } })
     if (resourcesTotal) {
       await ctx.store.remove(resourcesTotal)
     }
-    const pubConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) } })
+    const pubConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) }, relations: { node: true } })
     if (pubConfig) {
       await ctx.store.remove(pubConfig)
     }
 
-    const intfs = await ctx.store.find(Interfaces, { where: { node: Equal(savedNode) } })
+    const intfs = await ctx.store.find(Interfaces, { where: { node: Equal(savedNode) }, relations: { node: true } })
     const promises = intfs.map(intf => {
       return ctx.store.remove(intf)
     })
@@ -370,7 +370,7 @@ export async function nodePublicConfigStored(ctx: EventHandlerContext) {
   const savedNode = await ctx.store.get(Node, { where: { nodeID: nodeID } })
   if (!savedNode) return
 
-  let publicConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) } })
+  let publicConfig = await ctx.store.get(PublicConfig, { where: { node: Equal(savedNode) }, relations: { node: true } })
 
   if (!publicConfig) {
     publicConfig = new PublicConfig()
